@@ -45,6 +45,18 @@ class Animal {
   }
 }
 
+class Distance {
+    Animal a1;
+    Animal a2;
+    int howFar;
+    
+    Distance(Animal new_a1, Animal new_a2, int new_howFar){
+    a1 = new_a1;
+    a2 = new_a2;
+    howFar = new_howFar;
+    }
+}
+
 
 //initate a bunch of animals
 Animal aardvark = new Animal("aardvark", true, false, false, true, false, false, true, true, true, true, false, false, 4, false, false, true, 1);
@@ -101,14 +113,25 @@ int findDistance(Animal a1, Animal a2){
   if(a1.catsize != a2.catsize){
     dif_count++;
   }
-  
-  if(a1.type != a2.type){
-    dif_count++;
-  }
-  
   print(dif_count);
   return dif_count;
 }
+
+ArrayList<Animal> animals = new ArrayList<Animal>();
+ArrayList<Distance> distances = new ArrayList<Distance>();
+
+void findBestPair(ArrayList<Animal> list_of_animals){
+  int currentDistance;
+  for(int counter = 0; counter < list_of_animals.size(); counter++){
+    for(int counter2 = counter + 1; counter2 < list_of_animals.size(); counter2++){
+      if(counter != counter2){
+        currentDistance = findDistance(list_of_animals.get(counter), list_of_animals.get(counter + 1));
+        distances.add(new Distance(list_of_animals.get(counter), list_of_animals.get(counter + 1), currentDistance));
+      }  
+    }
+  }  
+}
+
 
 void setup(){
 findDistance(aardvark, bass);

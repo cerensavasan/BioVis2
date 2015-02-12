@@ -45,7 +45,7 @@ class Animal {
   }
 }
 
-class Distance {
+public class Distance {
     Animal a1;
     Animal a2;
     int howFar;
@@ -55,13 +55,64 @@ class Distance {
     a2 = new_a2;
     howFar = new_howFar;
     }
+    
+    Distance(Distance newDist){
+    a1 = newDist.a1;
+    a2 = newDist.a2;
+    howFar = newDist.howFar;
+    }
+    
 }
 
+public int getHowFar(Distance thisDist){
+    return thisDist.howFar;
+}
+
+public String getFirstName(Distance thisDist){
+  String nameOf = getAnimalName(thisDist.a1);
+  return nameOf;
+}
+
+public String getSecName(Distance thisDist){
+  String nameOf2 = getAnimalName(thisDist.a2);
+  return nameOf2;
+}
+
+public Animal getFirstAnimal(Distance thisDist){
+  return thisDist.a1;
+}
+
+public Animal getSecAnimal(Distance thisDist){
+  return thisDist.a2;
+}
+
+public String getAnimalName(Animal thisAn){
+  return thisAn.animal_name;
+}
+
+//TESTING PRINT
+public void print_distance(Distance thisDist4){
+  int v1 = getHowFar(thisDist4);
+  String v2 = getFirstName(thisDist4);
+  String v3 = getSecName(thisDist4);
+  print("\n" + v1 + " \n" + v2 + " \n" + v3 + " \n");
+}
 
 //initate a bunch of animals
+Animal error = new Animal("ERROR", false, false, false, false, false, false, false, false, false, false, false, false, 0, false, false, false, 0);
+
 Animal aardvark = new Animal("aardvark", true, false, false, true, false, false, true, true, true, true, false, false, 4, false, false, true, 1);
 Animal antelope = new Animal("antelope", true, false,  false,  true,  false,  false,  false,  true,  true, true , false , false , 4, true,  false,  true,  1);
-Animal bass = new Animal("bass",  false,  false,  true,  false,  false,  true,  true,  true,  true,  false,  false,  true,  0,  true,  false,  false,  4);
+Animal bass = new Animal("bass", false,  false,  true,  false,  false,  true,  true,  true,  true,  false,  false,  true,  0,  true,  false,  false,  4);
+Animal bear = new Animal("bear", true,  false,  false,  true,  false,  false,  true,  true,  true,  true,  false,  false,  4,  false,  false,  true, 1);
+Animal clam = new Animal("clam", false,  false,  true,  false,  false,  false,  true,  false,  false,  false,  false,  false,  0, false, false,  false,  7);
+Animal elephant = new Animal("elephant", true, false, false, true, false, false, false, true, true, true, false, false, 4, true, false, true, 1);
+Animal human = new Animal("human", true,  false, false, true, false, false, true ,true ,true, true, false, false, 2, false, true, true, 1);
+Animal kiwi = new Animal("kiwi", false, true, true, false, false, false, true, false, true, true, false, false, 2, true, false, false, 2);
+
+
+
+
 
 int findDistance(Animal a1, Animal a2){
   int dif_count = 0;
@@ -113,26 +164,82 @@ int findDistance(Animal a1, Animal a2){
   if(a1.catsize != a2.catsize){
     dif_count++;
   }
-  print(dif_count);
   return dif_count;
 }
 
 ArrayList<Animal> animals = new ArrayList<Animal>();
 ArrayList<Distance> distances = new ArrayList<Distance>();
 
-void findBestPair(ArrayList<Animal> list_of_animals){
-  int currentDistance;
-  for(int counter = 0; counter < list_of_animals.size(); counter++){
-    for(int counter2 = counter + 1; counter2 < list_of_animals.size(); counter2++){
-      if(counter != counter2){
-        currentDistance = findDistance(list_of_animals.get(counter), list_of_animals.get(counter + 1));
-        distances.add(new Distance(list_of_animals.get(counter), list_of_animals.get(counter + 1), currentDistance));
-      }  
-    }
-  }  
+void addAnimals(){
+  animals.add(aardvark);
+  //animals.add(antelope);
+  animals.add(bass);
+  animals.add(bear);
+  animals.add(clam);
+  //animals.add(elephant);
+  animals.add(human);
+  animals.add(kiwi);
 }
 
+void findDistances(){ 
+  int currentDistance;
+  for(int counter = 0; counter < animals.size(); counter++){
+    for(int counter2 = counter + 1; counter2 < animals.size(); counter2++){
+      if(counter != counter2){
+        currentDistance = findDistance(animals.get(counter), animals.get(counter2));
+        distances.add(new Distance(animals.get(counter), animals.get(counter2), currentDistance));
+      }  
+    }
+  }
 
-void setup(){
-findDistance(aardvark, bass);
+  //remove duplicates
+  int size = distances.size();
+  int duplicates = 0;
+  
+  for (int k = 0; k < size; k++) {
+     // start from the next in list because we already checked the ones before
+     for (int m = k + 1; m < size; m++) {
+         if (((getFirstName(distances.get(m)) == getFirstName(distances.get(k))) && (getSecName(distances.get(m)) == getSecName(distances.get(k)))) || ((getFirstName(distances.get(m)) == getSecName(distances.get(k))) && (getFirstName(distances.get(k)) == getSecName(distances.get(m))))){
+           duplicates++;
+           print("Number of duplicates: " + duplicates);
+           print("Removing " + getFirstName(distances.get(m)) + " relation with " + getFirstName(distances.get(k)) + " \n");
+           distances.remove(m);
+           m--;
+           // decrease the size of the array
+           size--;
+         }
+      } // for m
+   } // for k
+  
+  int newSize = distances.size();
+  
+  
+  //testing to see the results
+  for(int j=0; j < newSize; j++){
+    print_distance(distances.get(j));
+   }
+}
+
+Distance findClosestPair(ArrayList<Distance> currentDistances){
+  Distance smallest = new Distance(error, error, 9999999);
+  for (int k = 0; k < currentDistances.size(); k++) {
+     // start from the next in list because we already checked the ones before
+     for (int m = k + 1; m < currentDistances.size(); m++) {
+        if((getHowFar(currentDistances.get(k)) > getHowFar(currentDistances.get(m))) && (getHowFar(smallest) > getHowFar(currentDistances.get(m)))){
+          smallest = new Distance(currentDistances.get(m));
+        }
+        if((getHowFar(currentDistances.get(k)) < getHowFar(currentDistances.get(m))) && (getHowFar(smallest) > getHowFar(currentDistances.get(k)))){
+          smallest = new Distance(currentDistances.get(k));
+        }
+        if((getHowFar(currentDistances.get(k)) == getHowFar(currentDistances.get(m))) && ((getHowFar(smallest) > getHowFar(currentDistances.get(k))))){
+          smallest = new Distance(currentDistances.get(k));
+        }
+     }
+  }
+  
+  //TESTING PRINT
+  print("\n\nSmallest found:");
+  print_distance(smallest);
+  
+  return smallest;
 }

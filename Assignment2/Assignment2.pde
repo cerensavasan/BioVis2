@@ -21,6 +21,9 @@ class Animal {
   Boolean domestic;
   Boolean catsize;
   int type;
+  
+  Animal child1;
+  Animal child2;
 
   //Use this to create a new animal
   Animal(String new_name, Boolean new_h, Boolean new_feat, Boolean new_e, Boolean new_m, Boolean new_a, Boolean new_aqua, Boolean new_p, Boolean new_tooth, Boolean new_back, Boolean new_brea, Boolean new_ven, Boolean new_fin, int new_leg, Boolean new_tail, Boolean new_dom, Boolean new_cat, int new_type){
@@ -42,6 +45,15 @@ class Animal {
     domestic = new_dom;
     catsize = new_cat;
     type = new_type;
+    
+    child1 = null;
+    child2 = null;
+  }
+  
+  Animal(String new_name, Animal new_child1, Animal new_child2){
+    animal_name = new_name;
+    child1 = new_child1;
+    child2 = new_child2;
   }
 }
 
@@ -97,6 +109,14 @@ public void print_distance(Distance thisDist4){
   String v3 = getSecName(thisDist4);
   print("\n" + v1 + " \n" + v2 + " \n" + v3 + " \n");
 }
+
+
+//TESTING PRINT
+public void print_animal(Animal thisanimal){
+  String v1 = getAnimalName(thisanimal);
+  print("\n" + v1);
+}
+
 
 //initate a bunch of animals
 Animal error = new Animal("ERROR", false, false, false, false, false, false, false, false, false, false, false, false, 0, false, false, false, 0);
@@ -181,7 +201,18 @@ void addAnimals(){
   animals.add(kiwi);
 }
 
-void findDistances(){ 
+int findIndexOfAnimalName(String nameOf){
+  int thisIs = 0;
+  for(int counter = 0; counter < animals.size(); counter++){
+    if(getAnimalName(animals.get(counter)) == nameOf){
+       thisIs = counter;
+    }
+  }
+  return thisIs;
+}
+
+
+void findInitialDistances(){ 
   int currentDistance;
   for(int counter = 0; counter < animals.size(); counter++){
     for(int counter2 = counter + 1; counter2 < animals.size(); counter2++){
@@ -227,12 +258,14 @@ Distance findClosestPair(ArrayList<Distance> currentDistances){
      for (int m = k + 1; m < currentDistances.size(); m++) {
         if((getHowFar(currentDistances.get(k)) > getHowFar(currentDistances.get(m))) && (getHowFar(smallest) > getHowFar(currentDistances.get(m)))){
           smallest = new Distance(currentDistances.get(m));
+          print_distance(smallest);
         }
         if((getHowFar(currentDistances.get(k)) < getHowFar(currentDistances.get(m))) && (getHowFar(smallest) > getHowFar(currentDistances.get(k)))){
           smallest = new Distance(currentDistances.get(k));
+          print_distance(smallest);
         }
         if((getHowFar(currentDistances.get(k)) == getHowFar(currentDistances.get(m))) && ((getHowFar(smallest) > getHowFar(currentDistances.get(k))))){
-          smallest = new Distance(currentDistances.get(k));
+          smallest = new Distance(currentDistances.get(m));
         }
      }
   }

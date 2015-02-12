@@ -51,17 +51,17 @@ void makeClusters(){
         }
     }
     
+    
+    
     for(int counter = 0; counter < new_distances.size(); counter++){
-         int small = Integer.MAX_VALUE;
-         counter = 0;
-         int index = 0;
-         for(int counter2 = 0; counter2 < new_distances.size(); counter2++){
-            if(getHowFar(new_distances.get(counter2)) < small){
-               small = getHowFar(new_distances.get(counter2));
-               counter2++;
+         Distance smallest = new Distance(error, error, 9999999);
+         for(int counter2 = counter + 1; counter2 < new_distances.size(); counter2++){
+            if(getHowFar(new_distances.get(counter2)) < getHowFar(smallest)){
+               smallest = new_distances.get(counter2);
                nameCount++;
-               index = counter;
-               Distance current_smallest = new_distances.get(counter2);
+               Distance current_smallest = new_distances.get(counter);
+               print("current smallest distance is:\n");
+               print_distance(current_smallest);
                
                findIndexOfAnimalName(new String("cluster" + (nameCount-1)));
                Animal newRoot = animals.get(findIndexOfAnimalName("cluster" + (nameCount-1)));

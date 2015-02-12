@@ -6,7 +6,7 @@ ArrayList<Animal> newAnimals = new ArrayList<Animal>();
 
 ArrayList<Distance> new_distances = new ArrayList<Distance>();
 
-void makeClusters(ArrayList<Distance> new_dist){
+Animal makeRoot(ArrayList<Distance> new_dist){
     //create root
     Distance current_smallest = findClosestPair(new_dist);
     root.add(getFirstAnimal(current_smallest));
@@ -24,10 +24,13 @@ void makeClusters(ArrayList<Distance> new_dist){
     print_animal(rootCluster);
     print("\n");
     animals.add(rootCluster);
-  
+    return rootCluster;
+}
+
+
+void makeClusters(){
+    Animal rootCluster = makeRoot(distances);
     int nameCount = 0;
-  
-  
     int distanceToRoot1 = 0;
     int distanceToRoot2 = 0;
     int average = 0;
@@ -35,14 +38,17 @@ void makeClusters(ArrayList<Distance> new_dist){
     new_distances.clear();
     
     //find average distance to root for each animal left in the list
-    for(int counter = 0; counter < animals.size()-1; counter++){
+    for(int counter = 0; counter < animals.size(); counter++){
         distanceToRoot1 = findDistance(rootCluster.child1, animals.get(counter));
         distanceToRoot2 = findDistance(rootCluster.child2, animals.get(counter));
         print("\nCurrent root cluster is: \n");
         print_animal(rootCluster);
         average = ((distanceToRoot1 + distanceToRoot2)/2);
-        
-        new_distances.add(new Distance(rootCluster, animals.get(counter), average));
+        if(rootCluster != animals.get(counter)){
+          print("\nAdding new distance to new_distances: \n");
+          print_distance(new Distance(rootCluster, animals.get(counter), average));
+          new_distances.add(new Distance(rootCluster, animals.get(counter), average));
+        }
     }
     
     for(int counter = 0; counter < new_distances.size(); counter++){
@@ -55,7 +61,7 @@ void makeClusters(ArrayList<Distance> new_dist){
                counter2++;
                nameCount++;
                index = counter;
-               current_smallest = new_distances.get(counter2);
+               Distance current_smallest = new_distances.get(counter2);
                
                findIndexOfAnimalName(new String("cluster" + (nameCount-1)));
                Animal newRoot = animals.get(findIndexOfAnimalName("cluster" + (nameCount-1)));
@@ -97,7 +103,7 @@ void setup()
 {  //setup function called initially, only once
   addAnimals();
   findInitialDistances();
-  makeClusters(distances);
+  makeClusters();
   size(1000, 400);
   background(255);  //set background white
   colorMode(RGB);   //set colors to Hue, Saturation, Brightness mode

@@ -2,9 +2,9 @@ ArrayList<Animal> cluster = new ArrayList<Animal>();
 
 ArrayList<Animal> root = new ArrayList<Animal>(); //two in root
 
-ArrayList<Animal> newAnimals = new ArrayList<Animal>();
+public ArrayList<Animal> newAnimals = new ArrayList<Animal>();
 
-ArrayList<Distance> new_distances = new ArrayList<Distance>();
+public ArrayList<Distance> new_distances = new ArrayList<Distance>();
 
 Animal makeRoot(ArrayList<Distance> new_dist){
     //create root
@@ -31,14 +31,77 @@ Animal makeRoot(ArrayList<Distance> new_dist){
 void makeClusters(){
     Animal rootCluster = makeRoot(distances);
     int nameCount = 0;
-    int distanceToRoot1 = 0;
-    int distanceToRoot2 = 0;
-    int average = 0;
+    
+    Animal fatherCluster = rootCluster;
     
     new_distances.clear();
     
     //find average distance to root for each animal left in the list
+    new_distances = findDistancesToCurrentRoot(rootCluster);
+    
+    Animal newRoot; 
     for(int counter = 0; counter < animals.size(); counter++){
+         Distance smallest = calculateSecondarySmallest(new_distances);
+         nameCount++;
+         print("Name count after incrementing is:" + nameCount); 
+         print("current smallest distance is:\n");
+         print_distance(smallest);
+               
+         newRoot = (new Animal("cluster" + nameCount, animals.get(findIndexOfAnimalName("cluster"+(nameCount-1))) , getSecAnimal(smallest)));
+         print("\nNew root is:\n");
+         print_animal(newRoot);
+         print("\n Child 1: " + newRoot.child1);
+         print("\n Child 2: " + newRoot.child2);
+         
+         print("\nAbout to add cluster" + nameCount + ": has animals as children: " + getAnimalName(getFirstAnimal(smallest)) + " and " + getAnimalName(getSecAnimal(smallest)) + "\n"); 
+         animals.add(newRoot);                
+               
+         print("\nAbout to remove: " + getAnimalName(getFirstAnimal(smallest)));
+         print("\nAbout to remove: " + getAnimalName(getSecAnimal(smallest)) + "\n");
+         animals.remove(findIndexOfAnimalName(getAnimalName(getFirstAnimal(smallest)))); 
+         animals.remove(findIndexOfAnimalName(getAnimalName(getSecAnimal(smallest)))); 
+         
+         cluster.add(getFirstAnimal(smallest)); 
+         cluster.add(getSecAnimal(smallest));  
+         
+         new_distances.remove(counter); 
+         
+         smallest = calculateSecondarySmallest(new_distances);      
+         print("\nPrinting list of animals left in list: \n");
+         for(Animal anim : animals){
+            print_animal(anim);
+         }  
+    }
+}
+
+Distance calculateSecondarySmallest(ArrayList<Distance> thisDistances){
+  Distance smallest = new Distance(error, error, 9999999);
+  for(int counter = 0; counter < thisDistances.size(); counter++){
+    if(getHowFar(thisDistances.get(counter)) < getHowFar(smallest)){
+       smallest = thisDistances.get(counter);
+       print("\nFound smaller! The smallest distance now is: \n");
+       print_distance(smallest);
+    }
+    if(getHowFar(thisDistances.get(counter)) > getHowFar(smallest)){
+       print("\nStill the smallest. The smallest distance now is: \n");
+       print_distance(smallest);
+       smallest = smallest;
+    }
+    if(getHowFar(thisDistances.get(counter)) == getHowFar(smallest)){
+       print("\nEqual smallest. The  smallest distance now is: \n");
+       print_distance(smallest);
+       smallest = thisDistances.get(counter);
+    }
+  }
+  return smallest;
+}
+
+ArrayList<Distance> findDistancesToCurrentRoot(Animal rootCluster){
+  ArrayList<Distance> iterative_distances = new ArrayList<Distance>();
+  int distanceToRoot1 = 0;
+  int distanceToRoot2 = 0;
+  int average = 0;
+  for(int counter = 0; counter < animals.size(); counter++){
         distanceToRoot1 = findDistance(rootCluster.child1, animals.get(counter));
         distanceToRoot2 = findDistance(rootCluster.child2, animals.get(counter));
         print("\nCurrent root cluster is: \n");
@@ -50,44 +113,9 @@ void makeClusters(){
           new_distances.add(new Distance(rootCluster, animals.get(counter), average));
         }
     }
-    
-    
-    
-    for(int counter = 0; counter < new_distances.size(); counter++){
-         Distance smallest = new Distance(error, error, 9999999);
-         for(int counter2 = counter + 1; counter2 < new_distances.size(); counter2++){
-            if(getHowFar(new_distances.get(counter2)) < getHowFar(smallest)){
-               smallest = new_distances.get(counter2);
-               nameCount++;
-               Distance current_smallest = new_distances.get(counter);
-               print("current smallest distance is:\n");
-               print_distance(current_smallest);
-               
-               findIndexOfAnimalName(new String("cluster" + (nameCount-1)));
-               Animal newRoot = animals.get(findIndexOfAnimalName("cluster" + (nameCount-1)));
-               newRoot.child1 = getFirstAnimal(current_smallest);
-               newRoot.child2 = getSecAnimal(current_smallest);
-
-               print("\nAbout to add cluster" + nameCount + ": has animals as children: " + getAnimalName(getSecAnimal(current_smallest)) + " and " + getAnimalName(getSecAnimal(current_smallest)) + "\n");
-               animals.add(new Animal("cluster" + nameCount, getFirstAnimal(current_smallest), getSecAnimal(current_smallest)));
-                              
-               print("\nAbout to remove: " + getAnimalName(getFirstAnimal(current_smallest)));
-               print("\nAbout to remove: " + getAnimalName(getSecAnimal(current_smallest)) + "\n");
-               animals.remove(findIndexOfAnimalName(getAnimalName(getFirstAnimal(current_smallest)))); 
-               animals.remove(findIndexOfAnimalName(getAnimalName(getSecAnimal(current_smallest))));  
-               print("\nAbout to add cluster" + nameCount + ": has animals as children: " + getAnimalName(getSecAnimal(current_smallest)) + " and " + getAnimalName(getSecAnimal(current_smallest)) + "\n");
-               
-               print("\nPrinting list of animals left in list: \n");
-    
-               for(Animal anim : animals){
-                print_animal(anim);
-               }  
-            }
-         }
-    }
+  iterative_distances = new_distances;
+  return iterative_distances;
 }
-
-    
     
 void draw(){
   String firstString = getAnimalName(root.get(0));

@@ -205,6 +205,7 @@ int findIndexOfAnimalName(String nameOf){
   int thisIs = 0;
   for(int counter = 0; counter < animals.size(); counter++){
     if(getAnimalName(animals.get(counter)) == nameOf){
+       print("\nFound animal name " + getAnimalName(animals.get(counter)) + " is equal to " + nameOf); 
        thisIs = counter;
     }
   }
